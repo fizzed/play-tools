@@ -1,0 +1,23 @@
+#!/bin/bash
+
+SCRIPT_DIR=`dirname $0`
+
+cd $SCRIPT_DIR
+
+if [ ! -f $SCRIPT_DIR/run.conf ]; then
+  echo "run.conf config file missing!"
+  exit 1
+fi
+
+source $SCRIPT_DIR/run.conf
+
+if [ "$http_port" == "" ]; then
+  echo "run.conf must have an http_port defined"
+  exit 1
+fi
+
+PLAY_DIR=`pwd`
+LIB_DIR=`readlink $PLAY_DIR/play-current`
+STDOUT_LOG=$PLAY_DIR/logs/stdout.log
+
+exec java -Dconfig.file=prod.conf -Dhttp.port=$http_port -cp "$LIB_DIR/*" play.core.server.NettyServer $PLAY_DIR/ >$STDOUT_LOG 2>&1

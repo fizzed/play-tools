@@ -1,0 +1,27 @@
+#!/bin/bash
+
+SCRIPT_DIR=`dirname $0`
+STDOUT_LOG=$SCRIPT_DIR/logs/stdout.log
+
+# create empty stdout.log
+echo "Starting play app in background..." > $STDOUT_LOG
+
+# run in background
+$SCRIPT_DIR/play-run.sh &
+
+# wait up to 10 secs for line "application started" in stdout.log
+for i in {1..10}; do
+  if grep -i 'application started' $STDOUT_LOG; then
+   cat $STDOUT_LOG
+   echo "Play application appears to have started successfully!"
+   exit 0
+  else
+   echo "Waiting $i of 10 secs for 'application started' to appear in log..."
+   sleep 1
+  fi
+ done
+
+# if we get here the line in the log never appeared
+cat $STDOUT_LOG
+echo "The 'application started' line never appeared in log (app likely failed to start)"
+exit 1
