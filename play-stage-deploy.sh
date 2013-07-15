@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE=`realpath conf/deploy.conf`
+CONFIG_FILE="conf/deploy.conf"
 
 if [ ! -f $CONFIG_FILE ]; then
   echo "Config file $CONFIG_FILE does not exist; required for deploy"
@@ -13,11 +13,11 @@ skip_compile=0
 echo "Loading config file $CONFIG_FILE"
 source "$CONFIG_FILE"
 
-SOURCE_DIR=target/staged
+stage_dir=target/staged
 DEPLOYED_AT=`date --utc +%Y%m%d-%H%M%S`
 
 # compile play app into staged distribution
-if [ $skip_compile -eq 0 ]; then
+if [ ! -d "$stage_dir" ] || [ $skip_compile -eq 0 ]; then
   echo "Compiling and staging play application"
   play clean && play stage
   if [ ! $? -eq 0 ]; then
@@ -61,7 +61,7 @@ fi
 
 
 # time to rsync staged jars (include deletes of jars that don't match source)
-rsync --progress -avrt -d --delete -e "ssh -i $deploy_pem" $SOURCE_DIR/ $deploy_user@$deploy_host:$deploy_dir/play-$DEPLOYED_AT/
+rsync --progress -avrt -d --delete -e "ssh -i $deploy_pem" $stage_dir/ $deploy_user@$deploy_host:$deploy_dir/play-$DEPLOYED_AT/
 if [ ! $? -eq 0 ]; then
   echo "rsync failed!"
   exit 1
