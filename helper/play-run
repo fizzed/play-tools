@@ -4,12 +4,12 @@ SCRIPT_DIR=`dirname $0`
 
 cd $SCRIPT_DIR
 
-if [ ! -f $SCRIPT_DIR/run.conf ]; then
-  echo "run.conf config file missing!"
+if [ ! -f $SCRIPT_DIR/play-run.conf ]; then
+  echo "play-run.conf config file missing!"
   exit 1
 fi
 
-source $SCRIPT_DIR/run.conf
+source $SCRIPT_DIR/play-run.conf
 
 if [ "$http_port" == "" ]; then
   echo "run.conf must have an http_port defined"

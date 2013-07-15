@@ -7,7 +7,7 @@ STDOUT_LOG=$SCRIPT_DIR/logs/stdout.log
 echo "Starting play app in background..." > $STDOUT_LOG
 
 # run in background
-$SCRIPT_DIR/play-run.sh &
+$SCRIPT_DIR/play-run &
 
 # wait up to 10 secs for line "application started" in stdout.log
 for i in {1..10}; do

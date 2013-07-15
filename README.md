@@ -3,7 +3,7 @@ play-tools
 
 Tools and scripts for managing and deploying play projects.
 
-play-stage-deploy
+bin/play-deploy
 -----------------
 
 Deploy strategy from dev to prod that automates the entire process. Features include:
