@@ -9,14 +9,14 @@ echo "Starting play app in background..." > $STDOUT_LOG
 # run in background
 $SCRIPT_DIR/play-run &
 
-# wait up to 10 secs for line "application started" in stdout.log
-for i in {1..10}; do
+# wait up to 30 secs for line "application started" in stdout.log
+for i in {1..30}; do
   if grep -i 'application started' $STDOUT_LOG; then
    cat $STDOUT_LOG
    echo "Play application appears to have started successfully!"
    exit 0
   else
-   echo "Waiting $i of 10 secs for 'application started' to appear in log..."
+   echo "Waiting $i of 30 secs for 'application started' to appear in log..."
    sleep 1
   fi
  done

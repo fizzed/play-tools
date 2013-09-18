@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SCRIPT_DIR=`dirname $0`
+
+# default retain is 2
+retain=2
+
+if [ ! "$1" == "" ]; then
+  retain=$1
+fi
+
+echo "Retaining $retain most recent previous app versions..."
+
+play_current_dir=`readlink $SCRIPT_DIR/play-current`
+play_current_ver=`basename $play_current_dir`
+echo "Current play ver: $play_current_ver"
+
+retained=0
+for f in `ls -dr $SCRIPT_DIR/play-2*/`; do
+  # is this directory where play-current symlinks to?
+  is_current_app=`echo $f | grep -c "$play_current_ver"`
+
+  if [ "$is_current_app" == "0" ]; then
+    if [ $retained -eq $retain ] || [ $retained -gt $retain ]; then
+      # need to delete this ver
+      echo "Removing app version: `basename $f`"
+      rm -Rf $f
+    else
+      # retain this dir
+      echo "Retaining app version: `basename $f`"
+      let retained=$retained+1
+    fi
+  else
+    echo "Retinaing app version: `basename $f` (current version)"
+  fi
+done

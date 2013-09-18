@@ -87,6 +87,7 @@ echo "Successfully rsynced helper run/start/stop scripts!"
 
 
 # let user decide if remote app should be restarted?
+echo ""
 read -p "Restart play application on remote host (y/n)? " choice
 case "$choice" in 
   y|Y ) echo "Awesome, will restart play app..." ;;
@@ -118,3 +119,20 @@ if [ ! $? -eq 0 ]; then
 fi
 
 echo "Play app appears to have started correctly!"
+
+
+
+# let user decide if remote app should be restarted?
+echo ""
+read -p "Remove previous play application versions on remote host (y/n)? " choice
+case "$choice" in 
+  y|Y ) echo "Awesome, will remove previous play apps..." ;;
+  n|N )
+    echo "All finished"
+    exit 0 ;;
+  * ) echo "invalid answer! (won't remove previous apps)"; exit 0 ;;
+esac
+
+
+ssh -i $deploy_pem $deploy_user@$deploy_host "$deploy_dir/play-ver-clean"
+

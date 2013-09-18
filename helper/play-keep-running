@@ -1,0 +1,23 @@
+#!/bin/bash
+
+PLAY_DIR=`dirname $0`
+
+# if RUNNING_PID file exists, verify if that process is still running
+if [ -f $PLAY_DIR/RUNNING_PID ]; then
+  echo "RUNNING_PID file exists; verifying if app still running..."
+  PLAY_PID=`cat $PLAY_DIR/RUNNING_PID`
+  if ps -p $PLAY_PID > /dev/null; then
+    echo "Play app with pid $PLAY_PID still exists" 
+    exit 0
+  else
+    # pid no longer exists, delete the pid file
+    echo "Play app with pid $PLAY_PID not running"
+    echo "Deleting RUNNING_PID file from previous run"
+    rm -f $PLAY_DIR/RUNNING_PID
+  fi
+fi
+
+if [ ! -f $PLAY_DIR/RUNNING_PID ]; then
+  echo "Starting play app..."
+  $PLAY_DIR/play-start
+fi
