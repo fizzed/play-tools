@@ -8,7 +8,22 @@ if [ ! -f "conf/application.conf" ]; then
   exit 1
 fi
 
+# default config file for deploys
 CONFIG_FILE="conf/deploy.conf"
+
+while getopts “f:” OPTION
+do
+ case $OPTION in
+     f)
+         CONFIG_FILE=$OPTARG
+         ;;
+     ?)
+         echo "Unknown command line argument"
+         exit 1
+         ;;
+ esac
+done
+
 
 if [ ! -f $CONFIG_FILE ]; then
   echo "Config file $CONFIG_FILE does not exist; required for deploy"
@@ -33,6 +48,18 @@ if [ ! -d "$stage_dir" ] || [ $skip_compile -eq 0 ]; then
     exit 1
   fi
   echo "Compiling and staging was a success"
+fi
+
+# play 2.2 or above workaround
+# play stage now build a target/universal/stage directory
+if [ -d "target/universal" ]; then
+  echo "Running play >= 2.2 - creating new stage directory..."
+  mkdir --parents $stage_dir
+  cp target/universal/stage/lib/* $stage_dir/
+  if [ ! $? -eq 0 ]; then
+    echo "creating old format play 2.1 staged dir failed; skipping deploy"
+    exit 1
+  fi
 fi
 
 # VERY IMPORTANT- must escape $? since it'll end up being 0 rather than the var name
